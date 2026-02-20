@@ -1,14 +1,14 @@
 # Dara Personal-Project — Authentication with Supabase
 
-A professional, responsive authentication system with **real Supabase database integration**, email verification via OTP, and a demo mode fallback.
+A professional, responsive authentication system with **real Supabase integration**, email verification via OTP, Google OAuth sign-in/sign-up, and a demo mode fallback.
 
 ## Features
 
-- **Supabase Auth Integration** — Sign up, login, and email OTP verification powered by Supabase
+- **Supabase Auth Integration** — Email/password auth, Google OAuth, and OTP verification powered by Supabase
 - **Real Email Verification** — Users receive a 6-digit code via email to verify their account
-- **Sign Up Page** — Full name, email, password with strength meter, terms checkbox
+- **Sign Up Page** — Full name, email, password with strength meter, terms checkbox, and Google sign-up
 - **Email Verification Page** — 6-digit OTP input with auto-focus, paste support, resend cooldown
-- **Login Page** — Email & password with show/hide toggle, remember me, forgot password
+- **Login Page** — Email & password login plus Continue with Google
 - **Dashboard** — Stats, activity feed, quick actions after successful login
 - **Demo Mode** — Try the full UI without Supabase using local in-memory state
 - **Setup Guide** — If Supabase isn't configured, a step-by-step setup guide is shown
@@ -26,9 +26,10 @@ VITE_SUPABASE_URL=https://your-project-id.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key-here
 ```
 
-4. In Supabase Dashboard → **Authentication → Providers → Email**:
-   - Enable "Confirm email" to require email verification
-   - This sends a 6-digit OTP code to users when they sign up
+4. In Supabase Dashboard → **Authentication → Providers**:
+   - **Email**: enable "Confirm email" to require email verification
+   - **Google**: enable provider and configure OAuth credentials
+   - Add your site URL as an authorized redirect URL (for local dev use `http://localhost:5173`)
 
 5. Restart the dev server:
 
@@ -41,9 +42,10 @@ npm run dev
 ### With Supabase Configured:
 1. **Sign up** → Supabase creates the user and sends a verification email
 2. **Verify email** → Enter the 6-digit OTP code from the email
-3. **Login** → Authenticate with Supabase using email + password
-4. **Dashboard** → Shown when authenticated (persists via Supabase session)
-5. **Logout** → Signs out via Supabase
+3. **Login / Sign up with Google** → Redirect to Google OAuth via Supabase
+4. **Login with password** → Authenticate with Supabase using email + password
+5. **Dashboard** → Shown when authenticated (persists via Supabase session)
+6. **Logout** → Signs out via Supabase
 
 ### Without Supabase (Demo Mode):
 1. A setup guide is shown with instructions

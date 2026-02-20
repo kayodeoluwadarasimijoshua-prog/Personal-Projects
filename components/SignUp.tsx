@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, User, ArrowRight, Eye, EyeOff, Check, AlertCircle } from 'lucide-react';
-import { cn } from '@/utils/cn';
+import { Mail, Lock, User, ArrowRight, Check, AlertCircle, Chrome } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { BrandingPanel } from './BrandingPanel';
 
@@ -11,9 +10,8 @@ interface SignUpProps {
 }
 
 export const SignUp = ({ onSwitchToLogin, onVerificationNeeded }: SignUpProps) => {
-  const { signUp } = useAuth();
+  const { signUp, signInWithGoogle } = useAuth();
   const [formData, setFormData] = useState({ name: '', email: '', password: '', agree: false });
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -34,6 +32,18 @@ export const SignUp = ({ onSwitchToLogin, onVerificationNeeded }: SignUpProps) =
     { label: 'Good', color: 'bg-blue-400' },
     { label: 'Strong', color: 'bg-emerald-400' },
   ];
+
+
+
+  const handleGoogleSignUp = async () => {
+    setError('');
+    setIsLoading(true);
+    const result = await signInWithGoogle();
+    if (!result.success) {
+      setError(result.message);
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,7 +91,7 @@ export const SignUp = ({ onSwitchToLogin, onVerificationNeeded }: SignUpProps) =
                   <InputField label="Email Address" icon={Mail} placeholder="john@example.com" type="email" value={formData.email} onChange={(v) => setFormData({...formData, email: v})} />
                   
                   <div className="space-y-1">
-                    <InputField label="Password" icon={Lock} placeholder="••••••••" type={showPassword ? 'text' : 'password'} value={formData.password} onChange={(v) => setFormData({...formData, password: v})} />
+                    <InputField label="Password" icon={Lock} placeholder="••••••••" type='password' value={formData.password} onChange={(v) => setFormData({...formData, password: v})} />
                     {formData.password && (
                       <div className="px-1 pt-2">
                         <div className="flex gap-1 h-1.5 mb-1.5">
@@ -99,8 +109,26 @@ export const SignUp = ({ onSwitchToLogin, onVerificationNeeded }: SignUpProps) =
                     <label className="text-xs text-slate-500">I agree to the <a href="#" className="text-indigo-600 font-bold underline">Terms</a> and <a href="#" className="text-indigo-600 font-bold underline">Privacy Policy</a></label>
                   </div>
 
-                  <button disabled={isLoading} className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold shadow-lg shadow-indigo-100 flex items-center justify-center gap-2 transition-all">
+                  <button disabled={isLoading} className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold shadow-lg shadow-indigo-100 flex items-center justify-center gap-2 transition-all disabled:opacity-70">
                     {isLoading ? <div className="w-6 h-6 border-3 border-white/20 border-t-white rounded-full animate-spin" /> : <>Create Account <ArrowRight size={20} /></>}
+                  </button>
+
+                  <div className="relative py-1">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-slate-200" />
+                    </div>
+                    <span className="relative flex justify-center">
+                      <span className="bg-white px-4 text-xs font-semibold uppercase tracking-widest text-slate-400">Or continue with</span>
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleGoogleSignUp}
+                    disabled={isLoading}
+                    className="w-full py-3.5 border border-slate-200 hover:border-slate-300 rounded-2xl font-semibold text-slate-700 bg-white hover:bg-slate-50 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                  >
+                    <Chrome size={18} /> Continue with Google
                   </button>
                 </form>
 

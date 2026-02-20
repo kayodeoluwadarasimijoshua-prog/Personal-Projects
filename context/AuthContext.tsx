@@ -16,6 +16,7 @@ interface AuthContextType {
   isConfigured: boolean;
   signUp: (name: string, email: string, password: string) => Promise<{ success: boolean; message: string; needsVerification?: boolean }>;
   signIn: (email: string, password: string) => Promise<{ success: boolean; message: string }>;
+  signInWithGoogle: () => Promise<{ success: boolean; message: string }>;
   signOut: () => Promise<void>;
   verifyOtp: (email: string, token: string) => Promise<{ success: boolean; message: string }>;
   resendVerification: (email: string) => Promise<{ success: boolean; message: string }>;
@@ -70,9 +71,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) return { success: false, message: error.message };
     return { success: true, message: 'Welcome back!' };
+  };
+
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin,
+      },
+    });
+
+    if (error) return { success: false, message: error.message };
+    return { success: true, message: 'Redirecting to Google...' };
   };
 
   const verifyOtp = async (email: string, token: string) => {
@@ -93,7 +106,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isLoading, isConfigured: configured, signUp, signIn, signOut, verifyOtp, resendVerification }}>
+    <AuthContext.Provider value={{ user, session, isLoading, isConfigured: configured, signUp, signIn, signInWithGoogle, signOut, verifyOtp, resendVerification }}>
       {children}
     </AuthContext.Provider>
   );

@@ -40,8 +40,8 @@ export const SetupGuide = ({ onSkipToDemo }: SetupGuideProps) => {
     },
     {
       number: 4,
-      title: 'Enable Email OTP Verification',
-      description: 'In Supabase Dashboard, go to Authentication → Providers → Email. Make sure "Confirm email" is enabled. This sends a 6-digit OTP code to users on sign up.',
+      title: 'Enable Email + Google providers',
+      description: 'In Supabase Dashboard, go to Authentication → Providers. Enable Email (with Confirm email) and Google. In Google settings, add your app URL as an authorized redirect URL (for local dev: http://localhost:5173).',
     },
     {
       number: 5,
@@ -71,11 +71,11 @@ export const SetupGuide = ({ onSkipToDemo }: SetupGuideProps) => {
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold">Supabase Setup Required</h1>
-                  <p className="text-indigo-200 text-sm">Connect your database in 5 minutes</p>
+                  <p className="text-indigo-200 text-sm">Connect auth providers in 5 minutes</p>
                 </div>
               </div>
               <p className="text-indigo-100 text-sm leading-relaxed max-w-lg">
-                This app uses Supabase for authentication with real email verification. Follow the steps below to configure your Supabase project.
+                This app uses Supabase for authentication with email/password and Google OAuth. Follow the steps below to configure your Supabase project.
               </p>
             </div>
           </div>
