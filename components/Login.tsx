@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, ArrowRight, Github, Chrome, Eye, EyeOff, AlertCircle } from 'lucide-react';
-import { cn } from '@/utils/cn'; // Ensure this path matches your project structure
+import { Mail, Lock, ArrowRight, Chrome, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { BrandingPanel } from './BrandingPanel';
 
@@ -11,7 +10,7 @@ interface LoginProps {
 }
 
 export const Login = ({ onSwitchToSignUp, onLoginSuccess }: LoginProps) => {
-  const { signIn } = useAuth();
+  const { signIn, signInWithGoogle } = useAuth();
   const [formData, setFormData] = useState({ email: '', password: '', rememberMe: false });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,6 +20,18 @@ export const Login = ({ onSwitchToSignUp, onLoginSuccess }: LoginProps) => {
     const { name, value, type, checked } = e.target;
     setError('');
     setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+  };
+
+
+
+  const handleGoogleSignIn = async () => {
+    setError('');
+    setIsLoading(true);
+    const result = await signInWithGoogle();
+    if (!result.success) {
+      setError(result.message);
+      setIsLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -115,10 +126,28 @@ export const Login = ({ onSwitchToSignUp, onLoginSuccess }: LoginProps) => {
               <motion.button
                 whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
                 disabled={isLoading}
-                className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-lg shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2"
+                className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-lg shadow-lg shadow-indigo-200 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
               >
                 {isLoading ? <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin" /> : <>Log In <ArrowRight size={20} /></>}
               </motion.button>
+
+              <div className="relative py-1">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-200" />
+                </div>
+                <span className="relative flex justify-center">
+                  <span className="bg-white px-4 text-xs font-semibold uppercase tracking-widest text-slate-400">Or continue with</span>
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleGoogleSignIn}
+                disabled={isLoading}
+                className="w-full py-3.5 border border-slate-200 hover:border-slate-300 rounded-2xl font-semibold text-slate-700 bg-white hover:bg-slate-50 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+              >
+                <Chrome size={18} /> Continue with Google
+              </button>
             </form>
 
             <div className="mt-8 text-center">
